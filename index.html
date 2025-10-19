@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start.gg OAuth Callback</title>
+    <script>
+        // Redirect to the correct callback URL
+        if (window.location.pathname === '/') {
+            window.location.href = '/auth/callback' + window.location.search;
+        }
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
