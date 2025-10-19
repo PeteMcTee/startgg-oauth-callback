@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start.gg OAuth Callback</title>
+    <script>
+        // Redirect to the correct callback URL
+        if (window.location.pathname === '/') {
+            window.location.href = '/auth/callback' + window.location.search;
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success {
+            color: #28a745;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .code-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .copy-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+        .instructions {
+            background: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Start.gg OAuth Callback</h1>
+        
+        <div class="success">
+            ✅ Authorization successful! Here's your code:
+        </div>
+        
+        <div class="code-box" id="codeDisplay">
+            Loading...
+        </div>
+        
+        <button class="copy-btn" onclick="copyCode()">📋 Copy Code</button>
+        
+        <div class="instructions">
+            <h3>📋 Next Steps:</h3>
+            <ol>
+                <li>Copy the authorization code above</li>
+                <li>Go back to your terminal</li>
+                <li>Paste the code when prompted</li>
+                <li>Your MCP server will exchange it for an access token</li>
+            </ol>
+        </div>
+        
+        <div id="error" style="display: none; color: #dc3545; margin-top: 20px;">
+            <strong>❌ Error:</strong> No authorization code found in the URL.
+        </div>
+    </div>
 
+    <script>
+        // Extract the authorization code from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        
+        if (code) {
+            document.getElementById('codeDisplay').textContent = code;
+            document.getElementById('codeDisplay').style.background = '#d4edda';
+            document.getElementById('codeDisplay').style.borderColor = '#c3e6cb';
+        } else {
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('codeDisplay').textContent = 'No code found';
+        }
+        
+        function copyCode() {
+            const codeText = document.getElementById('codeDisplay').textContent;
+            navigator.clipboard.writeText(codeText).then(() => {
+                alert('Code copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = codeText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Code copied to clipboard!');
+            });
+        }
+        
+        // Auto-copy on page load
+        if (code) {
+            setTimeout(() => {
+                copyCode();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
